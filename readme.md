@@ -22,3 +22,6 @@ $ go get
     $ go run main.go
     ```
 - pada client requester (mis:postman) buka alamat localhost:3000/books
+
+
+go build -o a.exe && a.exe
