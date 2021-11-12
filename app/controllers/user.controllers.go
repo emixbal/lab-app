@@ -30,13 +30,35 @@ func UserRegister(c *fiber.Ctx) error {
 		return c.Status(http.StatusBadRequest).JSON(map[string]string{"message": "name is required"})
 	}
 
-	result, _ := models.UserRegister(&user)
+	result, err := models.UserRegister(&user)
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(map[string]string{"message": "something went wrong!"})
+	}
 	return c.Status(result.Status).JSON(result)
-
 }
 
 func UserLogin(c *fiber.Ctx) error {
-	return c.Status(http.StatusOK).JSON(map[string]string{"message": "User Logged in"})
+	email := c.FormValue("email")
+	txtUnHashPassword := c.FormValue("password")
+
+	if email == "" {
+		return c.Status(http.StatusBadRequest).JSON(map[string]string{"message": "Username tidak boleh kosong"})
+	}
+	if txtUnHashPassword == "" {
+		return c.Status(http.StatusBadRequest).JSON(map[string]string{"message": "Password tidak boleh kosong"})
+	}
+
+	isMatch, tokenString, err := models.CheckLogin(email, txtUnHashPassword)
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(map[string]string{"message": "something went wrong!"})
+	}
+	if !isMatch {
+		return c.Status(http.StatusUnauthorized).JSON(map[string]string{"message": "Password salah"})
+	}
+
+	return c.Status(http.StatusOK).JSON(map[string]string{
+		"token": tokenString,
+	})
 }
 
 func UserRefreshToken(c *fiber.Ctx) error {
