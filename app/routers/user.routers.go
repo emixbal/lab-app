@@ -9,6 +9,6 @@ import (
 func User(app *fiber.App) {
 	user := app.Group("/users")
 
-	user.Get("/auth/login", controllers.UserLogin)
-	user.Get("/auth/register", controllers.UserRegister)
+	user.Post("/auth/login", controllers.UserLogin)
+	user.Post("/auth/register", controllers.UserRegister)
 }
