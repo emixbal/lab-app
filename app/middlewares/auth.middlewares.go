@@ -46,3 +46,42 @@ func IsAuthenticated(c *fiber.Ctx) error {
 		},
 	)
 }
+
+func IsAadmin(c *fiber.Ctx) error {
+	raw_token := c.Request().Header.Peek("Authorization")
+	tokenString := string(raw_token)
+
+	if tokenString == "" {
+		return c.Status(http.StatusUnauthorized).JSON(
+			map[string]string{
+				"message": "Unauthorized, need access token to access this API route!",
+			},
+		)
+	}
+
+	claims := jwt.MapClaims{}
+	_, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
+		return []byte(os.Getenv("JWT_SECRET")), nil
+	})
+	if err != nil {
+		fmt.Println(err)
+		return c.Status(http.StatusUnauthorized).JSON(
+			map[string]string{
+				"message": "Unauthorized, access token is invalid!",
+			},
+		)
+	}
+
+	is_admin_txt := claims["is_admin"]
+	fmt.Println(is_admin_txt)
+	if is_admin_txt == "true" {
+		return c.Next()
+	}
+
+	return c.Status(http.StatusUnauthorized).JSON(
+		map[string]string{
+			"message": "Unauthorized to access this menu",
+		},
+	)
+
+}
