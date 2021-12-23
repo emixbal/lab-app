@@ -1,8 +1,8 @@
 # Building the binary of the App
 FROM golang:1.17.2-alpine AS build
 
-# `fiber-gorm` should be replaced with your project name
-WORKDIR /go/src/fiber-gorm
+# `labqid` should be replaced with your project name
+WORKDIR /go/src/labqid
 
 # Copy all the Code and stuff to compile everything
 COPY . .
@@ -23,11 +23,11 @@ WORKDIR /app
 RUN mkdir ./static
 COPY ./static ./static
 
-# `fiber-gorm` should be replaced here as well
-COPY --from=build /go/src/fiber-gorm/app .
-COPY --from=build /go/src/fiber-gorm/.env .
+# `labqid` should be replaced here as well
+COPY --from=build /go/src/labqid/app .
+# COPY --from=build /go/src/labqid/.env .
 
 # Exposes port 3000 because our program listens on that port
 EXPOSE 3000
 
-CMD ["./fiber-gorm"]
+CMD ["./labqid"]
