@@ -7,8 +7,8 @@ import (
 )
 
 func User(app *fiber.App) {
-	user := app.Group("/users")
+	router := app.Group("/users")
 
-	user.Post("/auth/login", controllers.UserLogin)
-	user.Post("/auth/register", controllers.UserRegister)
+	router.Post("/auth/login", controllers.UserLogin)
+	router.Post("/auth/register", controllers.UserRegister)
 }

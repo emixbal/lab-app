@@ -7,9 +7,9 @@ import (
 )
 
 func Product(app *fiber.App) {
-	user := app.Group("/products")
+	router := app.Group("/products")
 
-	user.Get("/", middlewares.IsAuthenticated, func(c *fiber.Ctx) error {
+	router.Get("/", middlewares.IsAuthenticated, func(c *fiber.Ctx) error {
 		return c.JSON(map[string]string{
 			"message": "ok",
 		})

@@ -15,6 +15,7 @@ import (
 type User struct {
 	gorm.Model
 	Name     string `json:"name"`
+	IsAdmin  bool   `json:"is_admin,omitempty" gorm:"default:false"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
@@ -34,7 +35,6 @@ func UserRegister(user *User) (Response, error) {
 
 	res.Status = http.StatusOK
 	res.Message = "success"
-	res.Data = user
 
 	return res, nil
 }
@@ -54,9 +54,10 @@ func CheckLogin(email, passwordTxt string) (bool, string, error) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"email":  email,
-		"userId": user.ID,
-		"nbf":    time.Date(2015, 10, 10, 12, 0, 0, 0, time.UTC).Unix(),
+		"email":    email,
+		"userId":   user.ID,
+		"is_admin": user.IsAdmin,
+		"nbf":      time.Date(2015, 10, 10, 12, 0, 0, 0, time.UTC).Unix(),
 	})
 
 	tokenString, err := token.SignedString([]byte(os.Getenv("JWT_SECRET")))

@@ -19,8 +19,16 @@ func UserRegister(c *fiber.Ctx) error {
 		fmt.Println(err)
 	}
 
+	is_admin := false
+	if c.FormValue("is_admin") == "1" {
+		is_admin = true
+	}
+
+	fmt.Println(c.FormValue("is_admin"))
+
 	user.Email = c.FormValue("email")
 	user.Name = c.FormValue("name")
+	user.IsAdmin = is_admin
 	user.Password = hashPassword
 
 	if user.Email == "" {
