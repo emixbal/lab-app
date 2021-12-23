@@ -1,7 +1,7 @@
 package routers
 
 import (
-	"fiber-gorm/app/middlewares"
+	"labqid/app/middlewares"
 
 	"github.com/gofiber/fiber/v2"
 )

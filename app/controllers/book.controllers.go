@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"fiber-gorm/app/models"
+	"labqid/app/models"
 	"net/http"
 
 	"github.com/gofiber/fiber/v2"

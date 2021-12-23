@@ -1,4 +1,4 @@
-module fiber-gorm
+module labqid
 
 go 1.13
 

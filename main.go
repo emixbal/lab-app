@@ -7,9 +7,9 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
 
-	"fiber-gorm/app/routers"
-	"fiber-gorm/config"
-	"fiber-gorm/database"
+	"labqid/app/routers"
+	"labqid/config"
+	"labqid/database"
 )
 
 func main() {

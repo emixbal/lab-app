@@ -1,8 +1,8 @@
 package models
 
 import (
-	"fiber-gorm/config"
 	"fmt"
+	"labqid/config"
 	"net/http"
 
 	"gorm.io/gorm"

@@ -1,9 +1,9 @@
 package models
 
 import (
-	"fiber-gorm/app/helpers"
-	"fiber-gorm/config"
 	"fmt"
+	"labqid/app/helpers"
+	"labqid/config"
 	"net/http"
 	"os"
 	"time"
