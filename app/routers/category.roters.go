@@ -10,6 +10,6 @@ import (
 func Category(app *fiber.App) {
 	router := app.Group("/categories")
 
-	router.Get("/", middlewares.ExampleMiddleware, controllers.FetchAllCategories) // contoh menggunakan middleware
-	router.Post("/", middlewares.IsAadmin, controllers.CreateCategory)
+	router.Get("/", middlewares.IsAuthenticated, middlewares.IsAdmin, controllers.FetchAllCategories) // contoh menggunakan middleware
+	router.Post("/", middlewares.IsAdmin, controllers.CreateCategory)
 }
