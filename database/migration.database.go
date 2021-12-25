@@ -7,5 +7,10 @@ import (
 )
 
 func InitMigration(db *gorm.DB) {
-	db.AutoMigrate(&models.User{}, &models.Book{}, &models.Category{})
+	db.AutoMigrate(
+		&models.User{},
+		&models.Book{},
+		&models.Category{},
+		&models.Product{},
+	)
 }

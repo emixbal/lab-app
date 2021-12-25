@@ -17,4 +17,5 @@ func Init(app *fiber.App) {
 	User(app)
 	Product(app)
 	Category(app)
+	Product(app)
 }
