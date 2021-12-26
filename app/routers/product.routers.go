@@ -27,6 +27,13 @@ func Product(app *fiber.App) {
 		controllers.CreateProduct,
 	)
 
+	router.Post(
+		"/upload_image/:product_id",
+		middlewares.IsAuthenticated,
+		middlewares.IsAdmin,
+		controllers.UploadImage,
+	)
+
 	router.Patch(
 		"/",
 		middlewares.IsAuthenticated,

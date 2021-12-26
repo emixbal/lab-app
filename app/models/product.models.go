@@ -23,12 +23,15 @@ type Product struct {
 }
 
 type ProductUpdate struct {
-	Name        string `json:"name" gorm:"index:idx_name,unique"`
-	Description string `json:"description"`
-	Price       int    `json:"price"`
+	Name           string `json:"name" gorm:"index:idx_name,unique"`
+	Description    string `json:"description"`
+	Price          int    `json:"price"`
+	ImageName      string `json:"image_name"`
+	ImageThumbName string `json:"image_thumb_name"`
 }
 
 type ProductResponse struct {
+	Id             int    `json:"id"`
 	Name           string `json:"name" gorm:"index:idx_name,unique"`
 	Description    string `json:"description"`
 	Price          int    `json:"price"`
@@ -110,7 +113,7 @@ func ProductDetail(product_id string) (Response, error) {
 	db := config.GetDBInstance()
 
 	rows, err_q := db.Table("products p").Where("p.id = ?", product_id).Select(
-		"p.name, p.description, p.price, u.id as user_id, u.name as user_name, u.email as user_email, p.image_name, p.image_thumb_name",
+		"p.id, p.name, p.description, p.price, u.id as user_id, u.name as user_name, u.email as user_email, p.image_name, p.image_thumb_name",
 	).Joins("left join users u on p.user_id = u.id").Count(&count).Rows()
 	if err_q != nil {
 		log.Println(err_q)
@@ -146,7 +149,7 @@ func FethAllProducts() (Response, error) {
 	db := config.GetDBInstance()
 
 	rows, err_q := db.Table("products p").Select(
-		"p.name, p.description, p.price, u.id as user_id, u.name as user_name, u.email as user_email, p.image_name, p.image_thumb_name",
+		"p.id, p.name, p.description, p.price, u.id as user_id, u.name as user_name, u.email as user_email, p.image_name, p.image_thumb_name",
 	).Joins("left join users u on p.user_id = u.id").Rows()
 	if err_q != nil {
 		log.Println(err_q)
