@@ -35,6 +35,10 @@ func IsAuthenticated(c *fiber.Ctx) error {
 	}
 
 	if _, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+
+		c.Locals("user_id", claims["userId"])
+		c.Locals("user_email", claims["email"])
+
 		if claims["is_admin"] == true {
 			c.Locals("is_admin", true)
 		} else {

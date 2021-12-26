@@ -14,6 +14,7 @@ func Product(app *fiber.App) {
 		"/",
 		controllers.FetchAllProducts,
 	)
+
 	router.Post(
 		"/",
 		middlewares.IsAuthenticated,

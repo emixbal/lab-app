@@ -10,11 +10,13 @@ import (
 
 type Product struct {
 	gorm.Model
-	Name           string `json:"name"`
+	Name           string `json:"name" gorm:"index:idx_name,unique"`
 	Description    string `json:"description"`
 	Price          int16  `json:"price"`
-	ImageLink      string `json:"image_link"`
-	ImageThumbLink string `json:"image_thumb_link"`
+	ImageName      string `json:"image_name"`
+	ImageThumbName string `json:"image_thumb_name"`
+	UserId         int    `json:"user_id"`
+	User           User
 }
 
 func FethAllProducts() (Response, error) {
