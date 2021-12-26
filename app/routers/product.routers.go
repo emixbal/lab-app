@@ -15,6 +15,11 @@ func Product(app *fiber.App) {
 		controllers.FetchAllProducts,
 	)
 
+	router.Get(
+		"/:product_id",
+		controllers.ProductDetail,
+	)
+
 	router.Post(
 		"/",
 		middlewares.IsAuthenticated,

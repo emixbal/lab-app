@@ -27,6 +27,11 @@ func ActiveInActiveProduct(c *fiber.Ctx) error {
 	return c.Status(result.Status).JSON(result)
 }
 
+func ProductDetail(c *fiber.Ctx) error {
+	result, _ := models.ProductDetail(c.FormValue("product_id"))
+	return c.Status(result.Status).JSON(result)
+}
+
 func CreateProduct(c *fiber.Ctx) error {
 	var product models.Product
 	var img image.Image
