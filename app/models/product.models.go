@@ -70,6 +70,24 @@ func ActiveInActiveProduct(product_id string) (Response, error) {
 	return res, nil
 }
 
+func RemoveImage(product_id string) (Response, error) {
+	var res Response
+	var product Product
+
+	db := config.GetDBInstance()
+	result := db.First(&product, product_id)
+	if result.Error != nil {
+		res.Status = http.StatusInternalServerError
+		res.Message = "can't find record"
+		return res, result.Error
+	}
+
+	helpers.MinioDeleteObject(product.ImageName)
+	helpers.MinioDeleteObject(product.ImageThumbName)
+
+	return res, nil
+}
+
 func ProductDetail(product_id string) (Response, error) {
 	var products_response ProductResponse
 	var res Response

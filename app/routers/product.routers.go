@@ -42,6 +42,13 @@ func Product(app *fiber.App) {
 	)
 
 	router.Patch(
+		"/remove_image/:product_id",
+		middlewares.IsAuthenticated,
+		middlewares.IsAdmin,
+		controllers.RemoveImage,
+	)
+
+	router.Patch(
 		"/:product_id",
 		middlewares.IsAuthenticated,
 		middlewares.IsAdmin,

@@ -30,6 +30,11 @@ func MinioGetUrl(object_name string) (string, error) {
 	// Set request parameters for content-disposition.
 	reqParams := make(url.Values)
 	// Generates a presigned url which expires in a day.
+	_, err_check_object := minioClient.StatObject(context.Background(), os.Getenv("MINIO_BUCKET_NAME"), object_name, minio.StatObjectOptions{})
+	if err_check_object != nil {
+		fmt.Println(err_check_object)
+		return "", err_check_object
+	}
 	image_url, err := minioClient.PresignedGetObject(context.Background(), os.Getenv("MINIO_BUCKET_NAME"), object_name, time.Second*24*60*60, reqParams)
 	if err != nil {
 		log.Println(err)
