@@ -22,6 +22,11 @@ func FetchAllProducts(c *fiber.Ctx) error {
 	return c.Status(result.Status).JSON(result)
 }
 
+func ActiveInActiveProduct(c *fiber.Ctx) error {
+	result, _ := models.ActiveInActiveProduct(c.FormValue("product_id"))
+	return c.Status(result.Status).JSON(result)
+}
+
 func CreateProduct(c *fiber.Ctx) error {
 	var product models.Product
 	var img image.Image

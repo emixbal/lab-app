@@ -23,6 +23,7 @@ type Product struct {
 	ImageName      string `json:"image_name"`
 	ImageThumbName string `json:"image_thumb_name"`
 	UserId         int    `json:"user_id"`
+	IsActive       bool   `json:"is_active" gorm:"default:true"`
 	User           User
 }
 
@@ -37,6 +38,35 @@ type ProductResponse struct {
 	ImageThumbName string `json:"image_thumb_name"`
 	ImageUrl       string `json:"image_url"`
 	ImageThumbUrl  string `json:"image_thumb_url"`
+}
+
+func ActiveInActiveProduct(product_id string) (Response, error) {
+	var res Response
+	var product Product
+
+	db := config.GetDBInstance()
+	result := db.First(&product, product_id)
+	if result.Error != nil {
+		res.Status = http.StatusInternalServerError
+		res.Message = "can't find record"
+		return res, result.Error
+	}
+
+	if product.IsActive {
+		fmt.Println(product.IsActive)
+		product.IsActive = false
+	} else {
+		fmt.Println(product.IsActive)
+		product.IsActive = true
+	}
+
+	db.Save(&product)
+
+	res.Status = http.StatusOK
+	res.Message = "Success"
+	res.Data = product
+
+	return res, nil
 }
 
 func FethAllProducts() (Response, error) {
