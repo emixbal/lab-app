@@ -49,14 +49,12 @@ func FethAllProducts() (Response, error) {
 	accessKeyID := os.Getenv("MINIO_ACEESS_ID")
 	secretAccessKey := os.Getenv("MINIO_SECRET_ACEESS_ID")
 	useSSL := false
-
-	// Initialize minio client object.
-	minioClient, err := minio.New(endpoint, &minio.Options{
+	minioClient, err_minio_conn := minio.New(endpoint, &minio.Options{
 		Creds:  credentials.NewStaticV4(accessKeyID, secretAccessKey, ""),
 		Secure: useSSL,
 	})
-	if err != nil {
-		log.Fatalln(err)
+	if err_minio_conn != nil {
+		log.Println(err_minio_conn)
 	}
 	// =======
 
