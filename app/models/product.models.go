@@ -14,7 +14,7 @@ type Product struct {
 	gorm.Model
 	Name           string `json:"name" gorm:"index:idx_name,unique"`
 	Description    string `json:"description"`
-	Price          int16  `json:"price"`
+	Price          int    `json:"price"`
 	ImageName      string `json:"image_name"`
 	ImageThumbName string `json:"image_thumb_name"`
 	UserId         int    `json:"user_id"`
@@ -22,10 +22,16 @@ type Product struct {
 	User           User
 }
 
+type ProductUpdate struct {
+	Name        string `json:"name" gorm:"index:idx_name,unique"`
+	Description string `json:"description"`
+	Price       int    `json:"price"`
+}
+
 type ProductResponse struct {
 	Name           string `json:"name" gorm:"index:idx_name,unique"`
 	Description    string `json:"description"`
-	Price          int16  `json:"price"`
+	Price          int    `json:"price"`
 	UserId         int    `json:"user_id"`
 	UserName       string `json:"user_name"`
 	UserEmail      string `json:"user_email"`
@@ -144,6 +150,39 @@ func CreateAProduct(product *Product) (Response, error) {
 
 	res.Status = http.StatusOK
 	res.Message = "success"
+	res.Data = product
+
+	return res, nil
+}
+
+func UpdateProduct(product_id string, product_payload ProductUpdate) (Response, error) {
+	var res Response
+	var product Product
+
+	db := config.GetDBInstance()
+	result := db.First(&product, product_id)
+	if result.Error != nil {
+		res.Status = http.StatusInternalServerError
+		res.Message = "can't find record"
+		return res, result.Error
+	}
+
+	if product_payload.Name != "" {
+		product.Name = product_payload.Name
+	}
+
+	if product_payload.Description != "" {
+		product.Description = product_payload.Description
+	}
+
+	if product_payload.Price != 0 {
+		product.Price = product_payload.Price
+	}
+
+	db.Save(&product)
+
+	res.Status = http.StatusOK
+	res.Message = "Success"
 	res.Data = product
 
 	return res, nil

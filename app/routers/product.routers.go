@@ -28,9 +28,23 @@ func Product(app *fiber.App) {
 	)
 
 	router.Patch(
+		"/",
+		middlewares.IsAuthenticated,
+		middlewares.IsAdmin,
+		controllers.UpdateProduct,
+	)
+
+	router.Patch(
 		"/active_inactive/:product_id",
 		middlewares.IsAuthenticated,
 		middlewares.IsAdmin,
 		controllers.ActiveInActiveProduct,
+	)
+
+	router.Patch(
+		"/:product_id",
+		middlewares.IsAuthenticated,
+		middlewares.IsAdmin,
+		controllers.UpdateProduct,
 	)
 }

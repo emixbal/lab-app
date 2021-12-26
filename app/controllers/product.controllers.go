@@ -27,6 +27,19 @@ func ActiveInActiveProduct(c *fiber.Ctx) error {
 	return c.Status(result.Status).JSON(result)
 }
 
+func UpdateProduct(c *fiber.Ctx) error {
+	var product models.ProductUpdate
+
+	product_id := c.FormValue("product_id")
+	product.Name = c.FormValue("name")
+	product.Description = c.FormValue("description")
+	price, _ := strconv.Atoi(c.FormValue("price"))
+	product.Price = price
+
+	result, _ := models.UpdateProduct(product_id, product)
+	return c.Status(result.Status).JSON(result)
+}
+
 func ProductDetail(c *fiber.Ctx) error {
 	result, _ := models.ProductDetail(c.FormValue("product_id"))
 	return c.Status(result.Status).JSON(result)
@@ -43,14 +56,13 @@ func CreateProduct(c *fiber.Ctx) error {
 	product.Name = c.FormValue("name")
 	product.Description = c.FormValue("description")
 	price, _ := strconv.Atoi(c.FormValue("price"))
-	product.Price = int16(price)
+	product.Price = price
 
 	file, err_file := c.FormFile("image")
 	if err_file != nil {
 		log.Println(err_file)
 		return c.Status(http.StatusBadRequest).JSON(map[string]string{"message": "image is required"})
 	}
-
 	if product.Name == "" {
 		return c.Status(http.StatusBadRequest).JSON(map[string]string{"message": "name is required"})
 	}
