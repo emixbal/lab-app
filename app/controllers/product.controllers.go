@@ -23,12 +23,12 @@ func FetchAllProducts(c *fiber.Ctx) error {
 }
 
 func ActiveInActiveProduct(c *fiber.Ctx) error {
-	result, _ := models.ActiveInActiveProduct(c.FormValue("product_id"))
+	result, _ := models.ActiveInActiveProduct(c.Params("product_id"))
 	return c.Status(result.Status).JSON(result)
 }
 
 func RemoveImage(c *fiber.Ctx) error {
-	result, _ := models.RemoveImage(c.FormValue("product_id"))
+	result, _ := models.RemoveImage(c.Params("product_id"))
 
 	return c.Status(200).JSON(result)
 }
@@ -36,7 +36,7 @@ func RemoveImage(c *fiber.Ctx) error {
 func UpdateProduct(c *fiber.Ctx) error {
 	var product models.ProductUpdate
 
-	product_id := c.FormValue("product_id")
+	product_id := c.Params("product_id")
 	product.Name = c.FormValue("name")
 	product.Description = c.FormValue("description")
 	price, _ := strconv.Atoi(c.FormValue("price"))
@@ -47,7 +47,8 @@ func UpdateProduct(c *fiber.Ctx) error {
 }
 
 func ProductDetail(c *fiber.Ctx) error {
-	result, _ := models.ProductDetail(c.FormValue("product_id"))
+	product_id := c.Params("product_id")
+	result, _ := models.ProductDetail(product_id)
 	return c.Status(result.Status).JSON(result)
 }
 

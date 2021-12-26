@@ -76,14 +76,28 @@ func RemoveImage(product_id string) (Response, error) {
 
 	db := config.GetDBInstance()
 	result := db.First(&product, product_id)
+
 	if result.Error != nil {
-		res.Status = http.StatusInternalServerError
+		res.Status = http.StatusOK
 		res.Message = "can't find record"
 		return res, result.Error
 	}
 
-	helpers.MinioDeleteObject(product.ImageName)
-	helpers.MinioDeleteObject(product.ImageThumbName)
+	_, err_delete_img := helpers.MinioDeleteObject(product.ImageName)
+	if err_delete_img != nil {
+		res.Status = http.StatusInternalServerError
+		res.Message = "error delete image"
+		return res, err_delete_img
+	}
+	_, err_delete_img_thumb := helpers.MinioDeleteObject(product.ImageThumbName)
+	if err_delete_img_thumb != nil {
+		res.Status = http.StatusInternalServerError
+		res.Message = "error delete image thumb"
+		return res, err_delete_img_thumb
+	}
+	product.ImageName = ""
+	product.ImageThumbName = ""
+	db.Save(&product)
 
 	return res, nil
 }
@@ -91,11 +105,13 @@ func RemoveImage(product_id string) (Response, error) {
 func ProductDetail(product_id string) (Response, error) {
 	var products_response ProductResponse
 	var res Response
+	var count int64
 
 	db := config.GetDBInstance()
-	rows, err_q := db.Table("products p").Select(
+
+	rows, err_q := db.Table("products p").Where("p.id = ?", product_id).Select(
 		"p.name, p.description, p.price, u.id as user_id, u.name as user_name, u.email as user_email, p.image_name, p.image_thumb_name",
-	).Joins("left join users u on p.user_id = u.id").Rows()
+	).Joins("left join users u on p.user_id = u.id").Count(&count).Rows()
 	if err_q != nil {
 		log.Println(err_q)
 		fmt.Print("error FethAllProducts")
@@ -104,6 +120,11 @@ func ProductDetail(product_id string) (Response, error) {
 		res.Status = http.StatusInternalServerError
 		res.Message = "error fetchin records"
 		return res, err_q
+	}
+	if count < 1 {
+		res.Status = http.StatusOK
+		res.Message = "no record found"
+		return res, nil
 	}
 
 	for rows.Next() {
