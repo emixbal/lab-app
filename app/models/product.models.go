@@ -1,6 +1,7 @@
 package models
 
 import (
+	"errors"
 	"fmt"
 	"labqid/app/helpers"
 	"labqid/config"
@@ -51,8 +52,14 @@ func ActiveInActiveProduct(product_id string) (Response, error) {
 	db := config.GetDBInstance()
 	result := db.First(&product, product_id)
 	if result.Error != nil {
+		if is_notfound := errors.Is(result.Error, gorm.ErrRecordNotFound); is_notfound {
+			res.Status = http.StatusOK
+			res.Message = "can't find record"
+			return res, result.Error
+		}
+
 		res.Status = http.StatusInternalServerError
-		res.Message = "can't find record"
+		res.Message = "Something went wrong!"
 		return res, result.Error
 	}
 
@@ -79,10 +86,15 @@ func RemoveImage(product_id string) (Response, error) {
 
 	db := config.GetDBInstance()
 	result := db.First(&product, product_id)
-
 	if result.Error != nil {
-		res.Status = http.StatusOK
-		res.Message = "can't find record"
+		if is_notfound := errors.Is(result.Error, gorm.ErrRecordNotFound); is_notfound {
+			res.Status = http.StatusOK
+			res.Message = "can't find record"
+			return res, result.Error
+		}
+
+		res.Status = http.StatusInternalServerError
+		res.Message = "Something went wrong!"
 		return res, result.Error
 	}
 
@@ -204,8 +216,14 @@ func UpdateProduct(product_id string, product_payload ProductUpdate) (Response, 
 	db := config.GetDBInstance()
 	result := db.First(&product, product_id)
 	if result.Error != nil {
+		if is_notfound := errors.Is(result.Error, gorm.ErrRecordNotFound); is_notfound {
+			res.Status = http.StatusOK
+			res.Message = "can't find record"
+			return res, result.Error
+		}
+
 		res.Status = http.StatusInternalServerError
-		res.Message = "can't find record"
+		res.Message = "Something went wrong!"
 		return res, result.Error
 	}
 
