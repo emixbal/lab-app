@@ -12,4 +12,5 @@ func Book(app *fiber.App) {
 
 	router.Get("/", middlewares.ExampleMiddleware, controllers.FetchAllBooks) // contoh menggunakan middleware
 	router.Post("/", controllers.CreateBook)
+	router.Post("/upload", controllers.UploadBook)
 }

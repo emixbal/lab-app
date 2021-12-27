@@ -1,11 +1,27 @@
 package controllers
 
 import (
+	"fmt"
 	"labqid/app/models"
 	"net/http"
 
 	"github.com/gofiber/fiber/v2"
 )
+
+func UploadBook(c *fiber.Ctx) error {
+
+	// Get first file from form field "document":
+	file, err := c.FormFile("book_images")
+
+	// Check for errors:
+	if err == nil {
+		c.SaveFile(file, fmt.Sprintf("./tmp/uploads_relative/%s", file.Filename))
+	} else {
+		fmt.Println(err)
+	}
+	return c.Status(200).SendString("")
+
+}
 
 func FetchAllBooks(c *fiber.Ctx) error {
 	result, _ := models.FethAllBooks()

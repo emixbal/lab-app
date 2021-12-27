@@ -114,6 +114,8 @@ func RemoveImage(product_id string) (Response, error) {
 	product.ImageThumbName = ""
 	db.Save(&product)
 
+	res.Status = http.StatusOK
+	res.Message = "success"
 	return res, nil
 }
 
@@ -237,6 +239,14 @@ func UpdateProduct(product_id string, product_payload ProductUpdate) (Response, 
 
 	if product_payload.Price != 0 {
 		product.Price = product_payload.Price
+	}
+
+	if product_payload.ImageName != "" {
+		product.ImageName = product_payload.ImageName
+	}
+
+	if product_payload.ImageThumbName != "" {
+		product.ImageThumbName = product_payload.ImageThumbName
 	}
 
 	db.Save(&product)

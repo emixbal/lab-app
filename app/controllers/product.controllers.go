@@ -50,6 +50,10 @@ func UploadImage(c *fiber.Ctx) error {
 		return c.Status(http.StatusBadRequest).JSON(map[string]string{"message": "can't find record"})
 	}
 
+	if len(product.ImageName) > 0 {
+		return c.Status(http.StatusBadRequest).JSON(map[string]string{"message": "Image already exist"})
+	}
+
 	file, err_file := c.FormFile("image")
 	if err_file != nil {
 		log.Println(err_file)
