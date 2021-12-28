@@ -63,3 +63,12 @@ func RemoveChart(c *fiber.Ctx) error {
 
 	return c.Status(200).JSON(result)
 }
+
+func UserChartDetail(c *fiber.Ctx) error {
+	user_id := c.Locals("user_id")
+
+	user_id_str := fmt.Sprintf("%v", user_id)
+	result, _ := models.UserChartDetail(c.Params("chart_id"), user_id_str)
+
+	return c.Status(200).JSON(result)
+}
