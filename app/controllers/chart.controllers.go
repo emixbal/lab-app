@@ -61,7 +61,7 @@ func ShowUserChart(c *fiber.Ctx) error {
 func RemoveChart(c *fiber.Ctx) error {
 	result, _ := models.RemoveChart(c.Params("chart_id"))
 
-	return c.Status(200).JSON(result)
+	return c.Status(result.Status).JSON(result)
 }
 
 func UserChartDetail(c *fiber.Ctx) error {
@@ -70,5 +70,13 @@ func UserChartDetail(c *fiber.Ctx) error {
 	user_id_str := fmt.Sprintf("%v", user_id)
 	result, _ := models.UserChartDetail(c.Params("chart_id"), user_id_str)
 
-	return c.Status(200).JSON(result)
+	return c.Status(result.Status).JSON(result)
+}
+
+func UserChartCheckout(c *fiber.Ctx) error {
+	user_id := c.Locals("user_id")
+	user_id_str := fmt.Sprintf("%v", user_id)
+	result, _ := models.UserChartCheckout(c.Params("chart_id"), user_id_str)
+
+	return c.Status(result.Status).JSON(result)
 }

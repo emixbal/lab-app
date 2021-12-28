@@ -154,3 +154,9 @@ func RemoveChart(chart_id string) (Response, error) {
 	res.Message = "success"
 	return res, nil
 }
+
+func UserChartCheckout(user_id string) (Response, error) {
+	var res Response
+
+	return res, nil
+}
