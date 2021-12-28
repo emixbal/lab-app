@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"labqid/app/models"
 	"net/http"
 	"strconv"
@@ -46,4 +47,19 @@ func NewChart(c *fiber.Ctx) error {
 
 	result, _ := models.NewChart(&chart)
 	return c.Status(result.Status).JSON(result)
+}
+
+func ShowUserChart(c *fiber.Ctx) error {
+	user_id := c.Locals("user_id")
+
+	user_id_str := fmt.Sprintf("%v", user_id)
+	result, _ := models.ShowUserChart(user_id_str)
+
+	return c.Status(result.Status).JSON(result)
+}
+
+func RemoveChart(c *fiber.Ctx) error {
+	result, _ := models.RemoveChart(c.Params("chart_id"))
+
+	return c.Status(200).JSON(result)
 }
