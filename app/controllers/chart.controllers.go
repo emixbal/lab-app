@@ -1,0 +1,49 @@
+package controllers
+
+import (
+	"labqid/app/models"
+	"net/http"
+	"strconv"
+
+	"github.com/gofiber/fiber/v2"
+)
+
+func NewChart(c *fiber.Ctx) error {
+	var chart models.Chart
+
+	user_id := c.Locals("user_id")
+	chart.UserId = int(user_id.(float64))
+	chart.SampleName = c.FormValue("sample_name")
+	chart.SampleDescription = c.FormValue("sample_description")
+	chart.SampleState = c.FormValue("sample_state")
+	chart.SampleWeight = c.FormValue("sample_weight")
+	qty, _ := strconv.Atoi(c.FormValue("quantity"))
+	product_id, _ := strconv.Atoi(c.FormValue("product_id"))
+	chart.Quantity = qty
+	chart.ProductId = product_id
+
+	if chart.SampleName == "" {
+		return c.Status(http.StatusBadRequest).JSON(map[string]string{"message": "sample_name is required"})
+	}
+	if chart.SampleDescription == "" {
+		return c.Status(http.StatusBadRequest).JSON(map[string]string{"message": "sample_description is required"})
+	}
+	if chart.SampleState == "" {
+		return c.Status(http.StatusBadRequest).JSON(map[string]string{"message": "sample_state is required"})
+	}
+	if chart.SampleWeight == "" {
+		return c.Status(http.StatusBadRequest).JSON(map[string]string{"message": "sample_weight is required"})
+	}
+	if chart.Quantity == 0 {
+		return c.Status(http.StatusBadRequest).JSON(map[string]string{"message": "quantity is required"})
+	}
+	if chart.ProductId == 0 {
+		return c.Status(http.StatusBadRequest).JSON(map[string]string{"message": "product_id is required"})
+	}
+	if chart.UserId == 0 {
+		return c.Status(http.StatusInternalServerError).JSON(map[string]string{"message": "something went wrong"})
+	}
+
+	result, _ := models.NewChart(&chart)
+	return c.Status(result.Status).JSON(result)
+}

@@ -12,5 +12,6 @@ func InitMigration(db *gorm.DB) {
 		&models.Book{},
 		&models.Category{},
 		&models.Product{},
+		&models.Chart{},
 	)
 }

@@ -18,4 +18,5 @@ func Init(app *fiber.App) {
 	Product(app)
 	Category(app)
 	Product(app)
+	Chart(app)
 }
