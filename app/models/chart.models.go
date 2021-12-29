@@ -157,31 +157,46 @@ func RemoveChart(chart_id string) (Response, error) {
 
 func UserChartCheckout(user_id string, charts_id []string) (Response, error) {
 	var res Response
-	var charts_response []ChartResponse
+	var chart_response ChartResponse
 	var count int64
+	var id_array []string
+	var transaction Transaction
 
 	db := config.GetDBInstance()
-	result := db.Table("charts c").
+	rows, err_q := db.Table("charts c").
 		Where("c.id IN ? AND c.user_id = ? AND c.is_active = ? AND c.is_completed = ?", charts_id, user_id, true, false).
 		Select(
-			"c.id, c.sample_name, c.sample_description, c.sample_state, c.sample_weight, c.quantity, p.name AS product_name, p.id AS product_id, p.price AS product_price, c.is_active, c.is_completed",
-		).Joins("left join products p on c.product_id = p.id").
-		Find(&charts_response).Count(&count)
+			"c.id",
+		).Count(&count).Rows()
 
-	if result.Error != nil {
+	if err_q != nil {
+		log.Println(err_q)
 		res.Status = http.StatusInternalServerError
 		res.Message = "Something went wrong!"
-		return res, result.Error
+		return res, err_q
 	}
 
 	if count < 1 {
-		res.Status = http.StatusOK
+		res.Status = http.StatusBadRequest
 		res.Message = "no record found"
 		return res, nil
 	}
 
+	for rows.Next() {
+		db.ScanRows(rows, &chart_response)
+		id_array = append(id_array, chart_response.Id)
+	}
+
+	if len(id_array) < 1 {
+		res.Status = http.StatusBadRequest
+		res.Message = "no record found"
+		return res, nil
+	}
+
+	transaction.IsCompleted = false
+	CreateNewTransaction(&transaction)
+
 	res.Status = http.StatusOK
 	res.Message = "success"
-	res.Data = charts_response
 	return res, nil
 }
