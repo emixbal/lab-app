@@ -29,10 +29,18 @@ $ go get
 - buat file denga nama .env pada root directory
 - anda dapat menyesuaikan isi file .env dengan mencontoh .env.example
 - Pada root directory, jalankan perintah ini
-```bash
-$ docker build -t gofiber .
-$ docker run -d -p 3000:3000 gofiber
-```
+    
+    ```bash
+    $ docker build -t labapp .
+    $ docker run -d -p 3000:3000 labapp
+    ```
+
+    ### with docker compose
+
+    ```bash
+    $ docker-compose up -d --build
+    ```
+
 - pada client requester (mis:postman) buka alamat localhost:3000/<ur route>
 
 
