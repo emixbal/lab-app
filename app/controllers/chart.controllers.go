@@ -3,6 +3,7 @@ package controllers
 import (
 	"fmt"
 	"labqid/app/models"
+	"log"
 	"net/http"
 	"strconv"
 
@@ -74,9 +75,25 @@ func UserChartDetail(c *fiber.Ctx) error {
 }
 
 func UserChartCheckout(c *fiber.Ctx) error {
+	var charts_id []string
+
 	user_id := c.Locals("user_id")
 	user_id_str := fmt.Sprintf("%v", user_id)
-	result, _ := models.UserChartCheckout(c.Params("chart_id"), user_id_str)
+
+	form, err_form := c.MultipartForm()
+
+	if err_form != nil {
+		log.Println(err_form)
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"message": "chart_id is required"})
+
+	}
+	chart_id_txt := form.Value["chart_id"]
+
+	for _, v := range chart_id_txt {
+		charts_id = append(charts_id, v)
+	}
+
+	result, _ := models.UserChartCheckout(user_id_str, charts_id)
 
 	return c.Status(result.Status).JSON(result)
 }

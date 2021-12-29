@@ -15,5 +15,5 @@ func Chart(app *fiber.App) {
 	router.Delete("/my/:chart_id", middlewares.IsAuthenticated, controllers.RemoveChart)
 	router.Get("/my/:chart_id", middlewares.IsAuthenticated, controllers.UserChartDetail)
 
-	router.Post("/check-out", middlewares.IsAuthenticated, controllers.UserChartCheckout)
+	router.Post("/ok", middlewares.IsAuthenticated, controllers.UserChartCheckout)
 }
