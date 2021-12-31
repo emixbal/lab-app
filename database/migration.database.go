@@ -13,5 +13,7 @@ func InitMigration(db *gorm.DB) {
 		&models.Category{},
 		&models.Product{},
 		&models.Chart{},
+		&models.Transaction{},
+		&models.Invoice{},
 	)
 }

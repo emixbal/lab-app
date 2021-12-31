@@ -6,6 +6,7 @@ import (
 	"labqid/config"
 	"log"
 	"net/http"
+	"strconv"
 
 	"gorm.io/gorm"
 )
@@ -159,8 +160,8 @@ func UserChartCheckout(user_id string, charts_id []string) (Response, error) {
 	var res Response
 	var chart_response ChartResponse
 	var count int64
-	var id_array []string
 	var transaction Transaction
+	var invoice Invoice
 
 	db := config.GetDBInstance()
 	rows, err_q := db.Table("charts c").
@@ -182,19 +183,30 @@ func UserChartCheckout(user_id string, charts_id []string) (Response, error) {
 		return res, nil
 	}
 
-	for rows.Next() {
-		db.ScanRows(rows, &chart_response)
-		id_array = append(id_array, chart_response.Id)
-	}
+	transaction.IsCompleted = false
 
-	if len(id_array) < 1 {
-		res.Status = http.StatusBadRequest
-		res.Message = "no record found"
+	err_trx := db.Transaction(func(tx *gorm.DB) error {
+		if err := tx.Create(&transaction).Error; err != nil {
+			log.Println(err)
+			return err
+		}
+		for rows.Next() {
+			db.ScanRows(rows, &chart_response)
+			invoice.ChartId = chart_response.Id
+			invoice.TransactionId = strconv.Itoa(int(transaction.ID))
+			if err := tx.Create(&invoice).Error; err != nil {
+				log.Println(err)
+				return err
+			}
+		}
+		return nil
+	})
+
+	if err_trx != nil {
+		res.Status = http.StatusInternalServerError
+		res.Message = "something went wrong"
 		return res, nil
 	}
-
-	transaction.IsCompleted = false
-	CreateNewTransaction(&transaction)
 
 	res.Status = http.StatusOK
 	res.Message = "success"

@@ -13,6 +13,15 @@ type Transaction struct {
 	IsCompleted bool `json:"is_completed" gorm:"default:false;"`
 }
 
+type Invoice struct {
+	gorm.Model
+	IsCompleted   bool `json:"is_completed" gorm:"default:false;"`
+	Transaction   Transaction
+	TransactionId string `json:"transaction_id" gorm:"not null"`
+	Chart         Chart
+	ChartId       string `json:"chart_id" gorm:"not null"`
+}
+
 func CreateNewTransaction(transaction *Transaction) (Response, error) {
 	var res Response
 	db := config.GetDBInstance()
