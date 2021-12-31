@@ -194,7 +194,7 @@ func UserChartCheckout(user_id string, charts_id []string) (Response, error) {
 			db.ScanRows(rows, &chart_response)
 			invoice.ChartId = chart_response.Id
 			invoice.TransactionId = strconv.Itoa(int(transaction.ID))
-			if err := tx.Create(&invoice).Error; err != nil {
+			if err := tx.Select("transaction_id", "chart_id").Create(&invoice).Error; err != nil {
 				log.Println(err)
 				return err
 			}
